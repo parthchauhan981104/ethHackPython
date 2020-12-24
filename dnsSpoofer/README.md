@@ -16,3 +16,9 @@ back to user by changing IP to any malicious one. This requires extensive knowle
 DNS and network layers work. Third (this program's strategy) is to forward request to DNS server,
 wait for response and modify response, only modify IP part to send back the ip we want.
 
+
+enable port forwarding so linux allows packets to flow through it like a router.
+echo 1 > /proc/sys/net/ipv4/ip_forward
+linux has this disabled as a security feature, so if we don't do this the victim
+will lose its network connection. If the intercepted data packets are not forwarded, 
+but are instead discarded, ARP spoofing can result in a denial of service (DoS).
